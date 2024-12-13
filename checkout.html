@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #000814;
+            color: #ffffff;
+        }
+        header {
+            background-color: #007bff;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+        }
+        main {
+            max-width: 600px;
+            margin: 50px auto;
+            background: white;
+            color: black;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        h2 {
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        label {
+            font-size: 1.1em;
+        }
+        select, input, button {
+            padding: 10px;
+            font-size: 1em;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .bank-logos {
+            display: flex;
+            justify-content: space-around;
+            margin: 10px 0;
+        }
+        .bank-logos img {
+            width: 60px;
+            height: auto;
+        }
+        .error {
+            color: red;
+            font-size: 0.9em;
+        }
+    </style>
+    <script>
+        function validateForm(event) {
+            const bank = document.getElementById('bank').value;
+            const accountNumber = document.getElementById('account-number').value;
+            const cvc = document.getElementById('cvc').value;
+            const validThrough = document.getElementById('valid-through').value;
+
+            let error = '';
+
+            // Validate account number for Capitec debit card
+            if (bank === 'capitec' && accountNumber.length !== 10) {
+                error = 'Capitec account numbers must be 10 digits.';
+            }
+
+            // Validate other fields
+            if (!cvc || cvc.length !== 3 || isNaN(cvc)) {
+                error = 'CVC must be a 3-digit number.';
+            }
+
+            if (!validThrough) {
+                error = 'Please provide a valid-through date.';
+            }
+
+            if (error) {
+                event.preventDefault();
+                document.getElementById('error-message').textContent = error;
+            }
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Checkout</h1>
+    </header>
+    <main>
+        <h2>Complete Your Purchase</h2>
+        <p>Course: ICT Concepts and Strategies for Beginners</p>
+        <p>Price: R370</p>
+        <form action="/process_payment" method="post" onsubmit="validateForm(event)">
+            <label for="payment-method">Choose Payment Method:</label>
+            <select id="payment-method" name="payment_method" required>
+                <option value="credit">Credit Card</option>
+                <option value="debit">Debit Card</option>
+            </select>
+
+            <label for="bank">Select Your Bank:</label>
+            <select id="bank" name="bank" required>
+                <option value="">-- Select Bank --</option>
+                <option value="visa">Visa</option>
+                <option value="capitec">Capitec</option>
+                <option value="fnb">FNB</option>
+                <option value="standard">Standard Bank</option>
+            </select>
+
+            <div class="bank-logos">
+                <img src="visa-logo.png" alt="Visa">
+                <img src="capitec.png" alt="Capitec">
+                <img src="standard.jpg" alt="FNB">
+                <img src="standard-logo.png" alt="Standard Bank">
+            </div>
+
+            <label for="account-number">Account Number:</label>
+            <input type="text" id="account-number" name="account_number" placeholder="Enter your account number" required>
+
+            <label for="cvc">CVC Code:</label>
+            <input type="text" id="cvc" name="cvc" placeholder="Enter 3-digit CVC" required>
+
+            <label for="valid-through">Valid Through:</label>
+            <input type="month" id="valid-through" name="valid_through" required>
+
+            <p id="error-message" class="error"></p>
+
+            <button type="submit">Pay Now</button>
+        </form>
+    </main>
+</body>
+</html>
